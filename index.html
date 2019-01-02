@@ -10,13 +10,15 @@
 <body>
     <nav id="navbar">
         <header>
-            What is scope？
+            <h1>What is scope？</h1>
         </header>
-        <a href="#" class="nav-link">Compiler Theory</a>
-        <a href="#" class="nav-link">Understanding Scope</a>
-        <a href="#" class="nav-link">Nested Scope</a>
-        <a href="#" class="nav-link">Errors</a>
-        <a href="#" class="nav-link">Review (TL;DR)</a>
+        <ul>
+            <li><a href="#compiler_theory" class="nav-link">Compiler Theory</a></li>
+            <li><a href="#understanding_scope" class="nav-link">Understanding Scope</a></li>
+            <li><a href="#nested_scope" class="nav-link">Nested Scope</a></li>
+            <li><a href="#errors" class="nav-link">Errors</a></li>
+            <li><a href="#review_(TL;DR)" class="nav-link">Review (TL;DR)</a></li>
+        </ul>
     </nav>
     <main id="main-doc">
         <section>
@@ -28,7 +30,7 @@
         </section>
         <section id="compiler_theory" class="main-section">
             <header>
-                Compiler Theory
+                <h2>Compiler Theory</h2>
             </header>
             <p>It may be self-evident, or it may be surprising, depending on your level of interaction with various languages, but despite the fact that JavaScript falls under the general category of "dynamic" or "interpreted" languages, it is in fact a compiled language. It is not compiled well in advance, as are many traditionally-compiled languages, nor are the resolts of compilation portable among various distributed systems.</p>
             <p>But, nevertheless, the JavaScript engine performs many of the same steps, albeit in more sophisticated ways than we may commonly be aware, of any traditional language-compiler.</p>
@@ -56,10 +58,10 @@
         </section>
         <section id="understanding_scope" class="main-section">
             <header>
-                Understanding Scope
+                <h2>Understanding Scope</h2>
             </header>
             <p>The way we will approach learning about scope is to think of the process in terms of a conversation. But, who is having the conversation?</p>
-            <h4>The Cast</h4>
+            <h3>The Cast</h3>
             <p>Let's meet the cast of characters that interact to process the program <code>var a = 2</code>;, so we understand their conversations that we'll listen in on shortly:</p>
             <ol>
                 <li>Engine: responsible for start-to-finish compilation and execution of our JavaScript program.</li>
@@ -67,7 +69,7 @@
                 <li>Scope: another friend of Engine; clilects and maintains a look-up list of all the declared identifiers (variables), and enforces a strict set of roles as to how these are accessible to currently executing code.</li>
             </ol>
             <p>For you to fully understand how JavaScript works, you need to begin to think like Engine (and friends) think, ask the questions they ask, and answer those questions the same.</p>
-            <h4>Back & Forth</h4>
+            <h3>Back & Forth</h3>
             <p>When you see the program <code>var a = 2;</code>, you most likely think of that as one statement. But that's not how our new friend Engine sees it. In fact, Engine sees two distinct statements, one which Compiler will handle during compilation, and one which Engine will handle during execution.</p>
             <p>So, let's break down how Engine and friends will approach the program <code>var a = 2;</code>.</p>
             <p>The first thing Compiler will do with this program is perform lexing to break it down into tokens, which it will then parse into a tree. But when Compiler gets to code-generation, it will treat this program somewhat differently than perhaps assumed.</p>
@@ -79,7 +81,7 @@
             </ol>
             <p>If Engine eventually finds a variable, it assigns the value <code>2</code> to it. If not, Engine will raise its hand and yell out an error!</p>
             <p>To summarize: two distinct actions are taken for a variable assignment: First, Compiler declares a variable (if not previously declared in the current scope), and second, when executing, Engine looks up the variable in Scope and assigns to it, if found.</p>
-            <h4>Compiler Speak</h4>
+            <h3>Compiler Speak</h3>
             <p>We need a little bit more compiler terminology to proceed further with understanding.</p>
             <p>When Engine executes the code that Compiler produced for step (2), it has to look-up the variable <code>a</code> to see if it has been declared, and this look-up is consulting Scope. But the type of look-up Engine performs affects the outcome of the look-up.</p>
             <p>In our case, it is said that Engine would be performing an "LHS" look-up for the variable <code>a</code>. The other type of look-up is called "RHS".</p>
@@ -90,18 +92,18 @@
             <p>Being slightly glib for a moment, you could also think "RHS" instead means "retrieve his/her source (value)", implying that RHS means "go get the value of...".</p>
             <p>Let's dig into that deeper.</p>
             <p>When I say:</p>
-            <code>
+            <code class="block">
 console.log( a );
             </code>
             <p>The reference to <code>a</code> is an RHS reference, because nothing is being assigned to <code>a</code> here. Instead, we're looking-up to retrieve the value of <code>a</code>, so that the value can be passed to <code>console.log(..)</code>.</p>
             <p>By contrast:</p>
-            <code>
+            <code class="block">
 a = 2;
             </code>
             <p>The reference to <code>a</code> here is an LHS reference, because we don't actually care what the current value is, we simply want to find the variable as a target for the <code>= 2</code> assignment operation.</p>
             <p><strong>Note:</strong> LHS and RHS meaning "left/right-hand side of an assignment" doesn't necessarily literally mean "left/right side of the <code>=</code> assignment operator". There are several other ways that assignments happen, and so it's better to conceptually think about it as: "who's the target of the assignment (LHS)" and "who's the source of the assignment (RHS)".</p>
             <p>Consider this program, which has both LHS and RHS references:</p>
-            <code>
+            <code class="block">
 function foo(a) {
     console.log( a ); // 2
 }
@@ -115,8 +117,8 @@ foo( 2 );
             <p>Finally, we can conceptualize that there's an LHS/RHS exchange of passing the value <code>2</code> (by way of variable <Code>a</Code>'s RHS look-up) into <code>log(..)</code>. Inside of the native implementation of <code>log(..)</code>, we can assume it has parameters, the first of which (perhaps called <code>arg1</code>) has an LHS reference look-up, before assigning <code>2</code> to it.</p>
             <p><strong>Note:</strong> You might be tempted to conceptualize the function declaration <code>function foo(a) {...</code> as a normal variable declaration and assignment, such as <code>var foo</code> and <code>foo = function(a){...</code>. In so doing, it would be tempting to think of this function declaration as involving an LHS look-up.</p>
             <p>However, the subtle but important difference is that Compiler handles both the declaration and the value definition during code-generation, such that when Engine is executing code, there's no processing necessary to "assign" a function value to <code>foo</code>. Thus, it's not really appropriate to think of a function declaration as an LHS look-up assignment in the way we're discussing them here.</p>
-            <h4>Engine/Scope Conversation</h4>
-            <code>
+            <h3>Engine/Scope Conversation</h3>
+            <code class="block">
 function foo(a) {
     console.log( a ); // 2
 }
@@ -137,9 +139,9 @@ foo( 2 );
             <blockquote><p><strong>Scope</strong>: You're right, Engine. Same guy, hasn't changed. Here ya go.</p></blockquote>
             <blockquote><p><strong>Engine</strong>: Cool. Passing the value of <code>a</code>, which is <code>2</code>, into <code>log(..)</code>.</p></blockquote>
             <blockquote><p>...</p></blockquote>
-            <h4>Quiz</h4>
+            <h3>Quiz</h3>
             <p>Check your understanding so far. Make sure to play the part of Engine and have a "conversation" with the Scope:</p>
-            <code>
+            <code class="block">
 function foo(a) {
     var b = a;
     return a + b;
@@ -155,12 +157,12 @@ var c = foo( 2 );
         </section>
         <section id="nested_scope" class="main-section">
             <header>
-                Nested Scope
+                <h2>Nested Scope</h2>
             </header>
             <p>We said that Scope is a set of rules for looking up variables by their identifier name. There's usually more than one Scope to consider, however.</p>
             <p>Just as a block or function is nested inside another block or function, scopes are nested inside other scopes. So, if a variable cannot be found in the immediate scope, Engine consults the next outer containing scope, continuing until found or until the outermost (aka, global) scope has been reached.</p>
             <p>Consider:</p>
-            <code>
+            <code class="block">
 function foo(a) {
     console.log( a + b );
 }
@@ -176,7 +178,7 @@ foo( 2 ); // 4
             <blockquote><p><strong><em>Engine</em></strong>: "Hey, <em>Scope</em> outside of <code>foo</code>, oh you're the global <em>Scope</em>, ok cool. Ever heard of <code>b</code>? Got an RHS reference for it."</p></blockquote>
             <blockquote><p><strong><em>Scope</em></strong>: "Yep, sure have. Here ya go."</p></blockquote>
             <p>The simple rules for traversing nested <em>Scope</em>: <em>Engine</em> starts at the currently executing <em>Scope</em>, looks for the variable there, then if not found, keeps going up one level, and so on. If the outermost global scope is reached, the search stops, whether it finds the variable or not.</p>
-            <h4>Building on Metaphors</h4>
+            <h3>Building on Metaphors</h3>
             <p>To visualize the process of nested Scope resolution, I want you to think of this tall building.</p>
             <img src="./fig1.png" alt="Building on Metaphors" height="300" />
             <p>The building represents our program's nested Scope rule set. The first floor of the building represents your currently executing Scope, wherever you are. The top level of the building is the global <em>Scope</em>.</p>
@@ -184,12 +186,12 @@ foo( 2 ); // 4
         </section>
         <section id="errors" class="main-section">
             <header>
-                Errors
+                <h2>Errors</h2>
             </header>
             <p>Why does it matter whether we call it LHS or RHS?</p>
             <p>Because these two types of look-ups behave differently in the circumstance where the variable has not yet been declared (is not found in any consulted <em>Scope</em>).</p>
             <p>Consider:</p>
-            <code>
+            <code class="block">
 function foo(a) {
     console.log( a + b );
     b = a;
@@ -197,29 +199,29 @@ function foo(a) {
 
 foo( 2 );
             </code>
-            <p>When the RHS look-up occurs for b the first time, it will not be found. This is said to be an "undeclared" variable, because it is not found in the scope.</p>
-            <p>If an RHS look-up fails to ever find a variable, anywhere in the nested Scopes, this results in a ReferenceError being thrown by the Engine. It's important to note that the error is of the type ReferenceError.</p>
-            <p>By contrast, if the Engine is performing an LHS look-up and arrives at the top floor (global Scope) without finding it, and if the program is not running in "Strict Mode" [^note-strictmode], then the global Scope will create a new variable of that name in the global scope, and hand it back to Engine.</p>
-            <p>"No, there wasn't one before, but I was helpful and created one for you."</p>
-            <p>"Strict Mode" [^note-strictmode], which was added in ES5, has a number of different behaviors from normal/relaxed/lazy mode. One such behavior is that it disallows the automatic/implicit global variable creation. In that case, there would be no global Scope'd variable to hand back from an LHS look-up, and Engine would throw a ReferenceError similarly to the RHS case.</p>
-            <p>Now, if a variable is found for an RHS look-up, but you try to do something with its value that is impossible, such as trying to execute-as-function a non-function value, or reference a property on a null or undefined value, then Engine throws a different kind of error, called a TypeError.</p>
-            <p>ReferenceError is Scope resolution-failure related, whereas TypeError implies that Scope resolution was successful, but that there was an illegal/impossible action attempted against the result.</p>
+            <p>When the RHS look-up occurs for <code>b</code> the first time, it will not be found. This is said to be an "undeclared" variable, because it is not found in the scope.</p>
+            <p>If an RHS look-up fails to ever find a variable, anywhere in the nested <em>Scopes</em>, this results in a <code>ReferenceError</code> being thrown by the Engine. It's important to note that the error is of the type <code>ReferenceError</code>.</p>
+            <p>By contrast, if the <em>Engine</em> is performing an LHS look-up and arrives at the top floor (global <em>Scope</em>) without finding it, and if the program is not running in "Strict Mode" [^note-strictmode], then the global <em>Scope</em> will create a new variable of that name <strong>in the global scope</strong>, and hand it back to <em>Engine</em>.</p>
+            <p><em>"No, there wasn't one before, but I was helpful and created one for you."</em></p>
+            <p>"Strict Mode" [^note-strictmode], which was added in ES5, has a number of different behaviors from normal/relaxed/lazy mode. One such behavior is that it disallows the automatic/implicit global variable creation. In that case, there would be no global Scope'd variable to hand back from an LHS look-up, and Engine would throw a <code>ReferenceError</code> similarly to the RHS case.</p>
+            <p>Now, if a variable is found for an RHS look-up, but you try to do something with its value that is impossible, such as trying to execute-as-function a non-function value, or reference a property on a <code>null</code> or <code>undefined</code> value, then Engine throws a different kind of error, called a <code>TypeError</code>.</p>
+            <p><code>ReferenceError</code> is <em>Scope</em> resolution-failure related, whereas <code>TypeError</code> implies that Scope resolution was successful, but that there was an illegal/impossible action attempted against the result.</p>
         </section>
         <section id="review_(TL;DR)" class="main-section">
             <header>
-                Review (TL;DR)
+                <h2>Review (TL;DR)</h2>
             </header>
             <p>Scope is the set of rules that determines where and how a variable (identifier) can be looked-up. This look-up may be for the purposes of assigning to the variable, which is an LHS (left-hand-side) reference, or it may be for the purposes of retrieving its value, which is an RHS (right-hand-side) reference.</p>
-            <p>LHS references result from assignment operations. Scope-related assignments can occur either with the = operator or by passing arguments to (assign to) function parameters.</p>
-            <p>The JavaScript Engine first compiles code before it executes, and in so doing, it splits up statements like var a = 2; into two separate steps:</p>
+            <p>LHS references result from assignment operations. Scope-related assignments can occur either with the <code>=</code> operator or by passing arguments to (assign to) function parameters.</p>
+            <p>The JavaScript Engine first compiles code before it executes, and in so doing, it splits up statements like <code>var a = 2</code>; into two separate steps:</p>
             <ol>
-                <li>First, var a to declare it in that Scope. This is performed at the beginning, before code execution.</li>
-                <li>Later, a = 2 to look up the variable (LHS reference) and assign to it if found.</li>
+                <li>First, <code>var a</code> to declare it in that Scope. This is performed at the beginning, before code execution.</li>
+                <li>Later, <code>a = 2</code> to look up the variable (LHS reference) and assign to it if found.</li>
             </ol>
             <p>Both LHS and RHS reference look-ups start at the currently executing Scope, and if need be (that is, they don't find what they're looking for there), they work their way up the nested Scope, one scope (floor) at a time, looking for the identifier, until they get to the global (top floor) and stop, and either find it, or don't.</p>
-            <p>Unfulfilled RHS references result in ReferenceErrors being thrown. Unfulfilled LHS references result in an automatic, implicitly-created global of that name (if not in "Strict Mode" [^note-strictmode]), or a ReferenceError (if in "Strict Mode" [^note-strictmode]).</p>
-            <h4>Quiz Answers</h4>
-            <code>
+            <p>Unfulfilled RHS references result in <code>ReferenceErrors</code> being thrown. Unfulfilled LHS references result in an automatic, implicitly-created global of that name (if not in "Strict Mode" [^note-strictmode]), or a <code>ReferenceError</code> (if in "Strict Mode" [^note-strictmode]).</p>
+            <h3>Quiz Answers</h3>
+            <code class="block">
 function foo(a) {
     var b = a;
     return a + b;
@@ -230,14 +232,14 @@ var c = foo( 2 );
             <ol>
                 <li>
                     <p>Identify all the LHS look-ups (there are 3!).</p>
-                    <p>c = .., a = 2 (implicit param assignment) and b = ..</p>
+                    <p><strong><code>c = ..</code>, <code>a = 2</code> (implicit param assignment) and <code>b = ..</code></strong></p>
                 </li>
                 <li>
                     <p>Identify all the RHS look-ups (there are 4!).</p>
-                    <p>foo(2.., = a;, a + .. and .. + b</p>
+                    <p><strong><code>foo(2..</code>, <code>= a;</code>, <code>a + ..</code> and <code>.. + b</code></strong></p>
                 </li>
             </ol>
-            <p>[^note-strictmode]: MDN: Strict Mode</p>
+            <p>[^note-strictmode]: MDN: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode">Strict Mode</a></p>
         </section>
     </main>
     <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
